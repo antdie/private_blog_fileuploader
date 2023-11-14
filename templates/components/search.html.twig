@@ -1,0 +1,26 @@
+<div class="search" {{ attributes }}>
+    <input
+        type="search"
+        data-model="query"
+        value="{{ query }}"
+        placeholder="Search"
+        autocomplete="off"
+    >
+    {% if this.results %}
+        <ul>
+            {% for result in this.results %}
+                <li class="text-truncate">
+                    {% if this.type == 'posts' %}
+                        <a href="{{ path('app_post_show', { slug: result.slug, id: result.id }) }}">{{ result }}</a> ({{ result.date|date(date_format) }})
+                    {% endif %}
+                    {% if this.type == 'files' %}
+                        <a href="{{ path('app_file_show', { name: result.name, id: result.id }) }}">{{ result }}.{{ result.type }}</a> ({{ result.date|date(date_format) }})
+                    {% endif %}
+                </li>
+            {% endfor %}
+            {% if this.results|length == max_search_results %}
+                <li>And few more results...</li>
+            {% endif %}
+        </ul>
+    {% endif %}
+</div>

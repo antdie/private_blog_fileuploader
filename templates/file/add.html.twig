@@ -1,0 +1,16 @@
+{% extends 'file/layout.html.twig' %}
+
+{% block title %}Add a file{% endblock %}
+
+{% block content %}
+<section>
+    <div class="container-xl">
+        <div class="row">
+            <div class="col-xl-9 mx-auto">
+                <p>Supported preview formats : .txt, .pdf, .jpg, .jpeg, .png, .gif, .svg, .webp, .mp3, .wav, .aac, .flac, .mp4, .webm</p>
+                {{ form(form) }}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

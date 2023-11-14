@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+{{ include('components/_header.html.twig', { title : 'Files', img : 'header_files.webp' }) }}
+<turbo-frame id="scroll" data-turbo-action="advance" autoscroll="true" data-autoscroll-block="start">
+    {% block content %}{% endblock %}
+</turbo-frame>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% if next or prev %}
+    <div class="mt-4 mt-xl-5 border-top border-bottom border-dark d-flex flex-column">
+        {% if next %}
+            <a class="prev-next d-flex align-items-center px-xl-4 py-2 py-xl-3 text-decoration-none"
+                {% if type == 'posts' %}
+                    href="{{ path('app_post_show', { slug: next.slug, id: next.id }) }}"
+                {% endif %}
+                {% if type == 'files' %}
+                    href="{{ path('app_file_show', { name: next.name, id: next.id }) }}"
+                {% endif %}
+            >
+                <span class="d-inline-block border border-dark border-opacity-25 me-2 me-xl-3 px-1 px-xl-2 py-xl-1">
+                    <svg height="20" viewBox="0 0 50 50" width="20" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h50v50H0z"/><path d="m2.75 35 2.086 2.086L25 16.922l20.164 20.164L47.25 35 25 12.75z"/><path fill="none" d="M0 0h50v50H0z"/></svg>
+                </span>
+                <span class="d-flex text-truncate">
+                    <span class="fs-14px">Next</span>
+                    <span class="ms-5 me-3 me-xl-5 border-end"></span>
+                    {% if type == 'posts' %}
+                        <span class="text-truncate">{{ next.category|upper }} <i class="diamond"></i> {{ next.title|capitalize }}</span>
+                    {% endif %}
+                    {% if type == 'files' %}
+                        <span class="text-truncate">{% if next.isPrivate %}<span class="fs-14px">🔒</span>&nbsp;{% endif %}{{ next.name }}.{{ next.type }} ({{ next.size|format_bytes }})</span>
+                    {% endif %}
+                </span>
+            </a>
+        {% endif %}
+        {% if next and prev %}
+            <div class="border-top"></div>
+        {% endif %}
+        {% if prev %}
+            <a class="prev-next d-flex align-items-center px-xl-4 py-2 py-xl-3 text-decoration-none"
+                {% if type == 'posts' %}
+                    href="{{ path('app_post_show', { slug: prev.slug, id: prev.id }) }}"
+                {% endif %}
+                {% if type == 'files' %}
+                    href="{{ path('app_file_show', { name: prev.name, id: prev.id }) }}"
+                {% endif %}
+            >
+                <span class="d-inline-block border border-dark border-opacity-25 me-2 me-xl-3 px-1 px-xl-2 py-xl-1">
+                    <svg class="rotate-180" height="20" viewBox="0 0 50 50" width="20" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h50v50H0z"/><path d="m2.75 35 2.086 2.086L25 16.922l20.164 20.164L47.25 35 25 12.75z"/><path fill="none" d="M0 0h50v50H0z"/></svg>
+                </span>
+                <span class="d-flex text-truncate">
+                    <span class="fs-14px">Previous</span>
+                    <span class="ms-4 me-3 me-xl-5 border-end"></span>
+                    {% if type == 'posts' %}
+                        <span class="text-truncate">{{ prev.category|upper }} <i class="diamond"></i> {{ prev.title|capitalize }}</span>
+                    {% endif %}
+                    {% if type == 'files' %}
+                        <span class="text-truncate">{% if prev.isPrivate %}<span class="fs-14px">🔒</span>&nbsp;{% endif %}{{ prev.name }}.{{ prev.type }} ({{ prev.size|format_bytes }})</span>
+                    {% endif %}
+                </span>
+            </a>
+        {% endif %}
+    </div>
+{% endif %}

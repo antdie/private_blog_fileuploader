@@ -1,0 +1,40 @@
+{% extends 'post/layout.html.twig' %}
+
+{% block title %}News{% endblock %}
+
+{% block content %}
+<section>
+    <div class="container-xl bg-transparent p-0">
+        <div class="row mx-0">
+            <div class="col-xl-11 mx-auto px-0">
+                {% if posts.getTotalItemCount %}
+                    <ul class="categories list-unstyled p-0 m-0 d-flex text-center">
+                        <li>
+                            <a href="{{ path('app_post') }}"
+                                {% if not app.request.query.get('filterValue') %}
+                                    class="active"
+                                {% endif %}
+                            >ALL</a>
+                        </li>
+                        {% for category in categories %}
+                            <li>
+                                <a href="{{ path('app_post', { filterField: 'c.id', filterValue: category.id }) }}"
+                                    {% if category.id == app.request.query.get('filterValue') %}
+                                        class="active"
+                                    {% endif %}
+                                >{{ category|upper }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    {#{{ knp_pagination_filter(posts, {'p.title': 'Title', 'c.name': 'Category'}) }}#}
+                    {{ component('search', { type: 'posts', max: max_search_results }) }}
+                    {{ include('components/_posts.html.twig') }}
+                    {{ knp_pagination_render(posts) }}
+                {% else %}
+                    <div class="text-center">Currently no post.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

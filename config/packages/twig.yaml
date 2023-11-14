@@ -1,0 +1,13 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    form_themes: ['bootstrap_5_layout.html.twig']
+    globals:
+        site_name: '%env(SITE_NAME)%'
+        site_description: '%env(SITE_DESCRIPTION)%'
+        date_format: '%env(DATE_FORMAT)%'
+        discord_contact: '%env(DISCORD_CONTACT)%'
+        max_search_results: '%env(MAX_SEARCH_RESULTS)%'
+
+when@test:
+    twig:
+        strict_variables: true

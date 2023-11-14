@@ -1,0 +1,33 @@
+import:
+  - recipe/symfony.php
+  - contrib/webpack_encore.php
+
+config:
+  repository: 'git@gitlab.com:DIEUD0/private_blog_fileuploader.git'
+  shared_files: []
+  env:
+    APP_ENV: prod
+
+hosts:
+  prod:
+    branch: master
+    hostname: debian # Server hostname
+    remote_user: test # Server username
+    deploy_path: '~/private_blog_fileuploader/deploy'
+    keep_releases: 3
+
+tasks:
+  start:prod_docker:
+    - run: cd {{current_path}} && docker compose -f docker-compose.yml -f docker-compose.production.yml up -d
+  generate:prod_env:
+    - run: cd {{release_path}} && composer dump-env prod
+
+after:
+  deploy:failed: deploy:unlock
+  deploy:vendors:
+    - webpack_encore:build
+    - yarn:install
+    - doctrine:schema:validate
+    - database:migrate
+    - start:prod_docker
+    - generate:prod_env

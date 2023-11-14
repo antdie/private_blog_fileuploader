@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}Welcome{% endblock %} | {{ site_name }}</title>
+        <meta name="description" content="{% block description %}{{ site_description }}{% endblock %}">
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+        <meta name="turbo-cache-control" content="no-cache">
+    </head>
+    <body class="preload">
+        <nav>
+            <div>
+                <a href="{{ path('app_index') }}">
+                    {{ include('components/_logo.html.twig', { width: 63, height: 46}) }}
+                </a>
+            </div>
+            <div class="d-block d-xl-none text-white">
+                <button data-controller="burger" id="burger" class="bg-transparent border-0"><span></span></button>
+            </div>
+            <ul>
+                <li class="d-block d-xl-none py-3">
+                    {{ include('components/_logo.html.twig', { width: 68, height: 58}) }}
+                </li>
+                <li><a href="{{ path('app_index') }}"{% if controller_name is defined and controller_name == 'IndexController' %} class="active"{% endif %}>Home</a></li>
+                <li><a href="{{ path('app_post') }}"{% if controller_name is defined and controller_name == 'PostController' %} class="active"{% endif %}>News</a></li>
+                <li><a href="{{ path('app_file') }}"{% if controller_name is defined and controller_name == 'FileController' %} class="active"{% endif %}>Files</a></li>
+                {% if app.user %}
+                    <li><a href="{{ path('app_account') }}"{% if controller_name is defined and controller_name == 'AccountController' %} class="active"{% endif %}>Account</a></li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li><a href="{{ path('admin') }}">Admin</a></li>
+                    {% endif %}
+                    <li><a href="{{ path('app_logout') }}">Log out ➝</a></li>
+                {% else %}
+                    <li><a href="{{ path('app_login') }}"{% if controller_name is defined and controller_name == 'LoginController' %} class="active"{% endif %}>Log in ➝</a></li>
+                {% endif %}
+            </ul>
+            <div class="dimmed d-block d-xl-none"></div>
+        </nav>
+        <main>
+            {% block body %}{% endblock %}
+        </main>
+        <footer>
+            Add {{ discord_contact }} on Discord to access the site's private files.
+        </footer>
+        {{ include('components/_notyf.html.twig') }}
+    </body>
+</html>

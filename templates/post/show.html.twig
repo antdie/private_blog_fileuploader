@@ -1,0 +1,50 @@
+{% extends 'post/layout.html.twig' %}
+
+{% block title %}{{ post|capitalize }}{% endblock %}
+{% block description %}{{ post.content|u.truncate(160, '...', false) }}{% endblock %}
+
+{% block content %}
+<section>
+    <div class="container-xl">
+        <div class="row">
+            <article class="col-xl-11 mx-auto">
+                <div class="text-center mb-4 mb-xl-5">
+                    <h1>{{ post|capitalize }}</h1>
+                    <span class="fs-14px">{% if post.category %}{{ post.category|upper }} <i class="diamond"></i> {% endif %}{{ post.date|date(date_format) }}</span>
+                </div>
+                {% if post.image %}
+                    <img loading="lazy" src="{{ asset('uploads/posts/' ~ post.image) }}" alt="{{ post }}" class="img-fluid mb-4 mb-xl-5" width="1210" height="215">
+                {% endif %}
+                <div class="mb-4 mb-xl-5">{{ post.content|replace({'<h1>': '<h2>', '</h1>': '</h2>', '<a ': '<a target="_blank" '})|raw }}</div>
+                {% if app.user %}
+                    <turbo-frame id="comments">
+                        {{ include('components/_notyf.html.twig') }}
+                        <div class="mb-4 mb-xl-5">
+                            {{ form(form) }}
+                            {% for comment in post.postComments %}
+                                <p{% if loop.last %} class="mb-0"{% endif %}>
+                                    <span class="border-bottom">{% if comment.account %}{{ comment.account|upper }}{% else %}Account deleted{% endif %} <i class="diamond"></i> <span class="fs-14px">{{ comment.date|date(date_format) }}</span><br></span>
+                                    {{ comment.content|nl2br }}
+                                </p>
+                            {% endfor %}
+                        </div>
+                    </turbo-frame>
+                {% endif %}
+                {% if post.category %}
+                    <a href="{{ path('app_post', { filterField: 'c.id', filterValue: post.category.id }) }}" class="btn-list">
+                        <svg class="me-1 me-xl-2" width="25" height="25" viewBox="0 0 12 12" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><g fill="#1D1D1B"><path d="M.5 5.5h11v1H.5zM.5 2.5h11v1H.5zM.5 8.5h11v1H.5z"/></g></svg>
+                        <span class="align-middle">List</span>
+                    </a>
+                    {{ include('components/_prev-next.html.twig', { type: 'posts' }) }}
+                {% else %}
+                    {# IF A CATEGORY IS DELETED TO NOT BREAK THE DESIGN #}
+                    <a href="{{ path('app_post') }}" class="btn-list">
+                        <svg class="me-1 me-xl-2" width="25" height="25" viewBox="0 0 12 12" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><g fill="#1D1D1B"><path d="M.5 5.5h11v1H.5zM.5 2.5h11v1H.5zM.5 8.5h11v1H.5z"/></g></svg>
+                        <span class="align-middle">List</span>
+                    </a>
+                {% endif %}
+            </article>
+        </div>
+    </div>
+</section>
+{% endblock %}

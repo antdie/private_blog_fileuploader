@@ -1,0 +1,102 @@
+{% extends 'file/layout.html.twig' %}
+
+{% block title %}{{ file }}.{{ file.type }} ({{ file.size|format_bytes }}){% endblock %}
+{% block description %}Posted by {{ file.account }} the {{ file.date|date(date_format) }}{% endblock %}
+
+{% block content %}
+{% set supportedPreview = ['txt', 'pdf', 'jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'mp3', 'wav', 'aac', 'flac', 'mp4', 'webm'] %}
+<section>
+    <div class="container-xl">
+        <div class="row">
+            <article class="col-xl-11 mx-auto">
+                <turbo-frame id="file">
+                    {{ include('components/_notyf.html.twig') }}
+                    <div class="text-center">
+                        <h1>{% if file.isPrivate %}🔒&nbsp;{% endif %}{{ file }}.{{ file.type }} ({{ file.size|format_bytes }})</h1>
+                        <p class="fs-14px mb-4 mb-xl-5">
+                            {% if file.account %}{{ file.account|upper }}{% else %}Account deleted{% endif %} <i class="diamond"></i> {{ file.date|date(date_format) }}
+                        </p>
+                        {% if file.type in supportedPreview %}
+                            <button type="button" class="btn btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#preview">
+                                Preview
+                            </button>
+                            <div data-controller="modal" class="modal modal-lg fade" id="preview" tabindex="-1" aria-labelledby="previewLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content rounded-0">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="previewLabel">Preview</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {% if file.type == 'txt' and txt_content %}
+                                                <p class="text-start mb-0">{{ txt_content|nl2br }}</p>
+                                            {% endif %}
+                                            {% if file.type == 'pdf' %}
+                                                <div class="ratio ratio-1x1">
+                                                    <embed src="{{ asset('uploads/files/'~file~'-'~file.hash~'.'~file.type) }}">
+                                                        Your browser doesn't support embedded pdf.
+                                                    </embed>
+                                                </div>
+                                            {% endif %}
+                                            {% if file.type in ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'] %}
+                                                <div class="text-center">
+                                                    <img loading="lazy" src="{{ asset('uploads/files/'~file~'-'~file.hash~'.'~file.type) }}" alt="{{ file }}.{{ file.type }}" class="img-fluid">
+                                                </div>
+                                            {% endif %}
+                                            {% if file.type in ['mp3', 'wav', 'aac', 'flac'] %}
+                                                <div class="text-center">
+                                                    <audio class="w-100" src="{{ asset('uploads/files/'~file~'-'~file.hash~'.'~file.type) }}" controls preload="metadata">
+                                                        Your browser doesn't support embedded audio.
+                                                    </audio>
+                                                </div>
+                                            {% endif %}
+                                            {% if file.type in ['mp4', 'webm'] %}
+                                                <div class="text-center">
+                                                    <video class="img-fluid" src="{{ asset('uploads/files/'~file~'-'~file.hash~'.'~file.type) }}" controls preload="metadata">
+                                                        Your browser doesn't support embedded videos.
+                                                    </video>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <a class="btn btn-primary mb-1" href="{{ path('app_file_download', { name: file, id: file.id }) }}" target="_blank">Download</a>
+                        {% if file.account and file.account == app.user or is_granted('ROLE_ADMIN') %}
+                            <a class="btn btn-danger text-white mb-1" href="{{ path('app_file_modify', { name: file, id: file.id }) }}">Modify file access</a>
+                            <button type="button" class="btn btn-danger text-white mb-1" data-bs-toggle="modal" data-bs-target="#delete">
+                                Delete
+                            </button>
+                            <div data-controller="modal" class="modal fade" id="delete" tabindex="-1" aria-labelledby="deleteLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content rounded-0">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteLabel">Delete</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-start">
+                                            Do you really want to delete this file ?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <a data-turbo-frame="_top" class="btn btn-danger text-white" href="{{ path('app_file_delete', { name: file, id: file.id }) }}">Delete file</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </turbo-frame>
+                <div class="mt-4 mt-xl-5">
+                    <a href="{{ path('app_file') }}" class="btn-list">
+                        <svg class="me-1 me-xl-2" width="25" height="25" viewBox="0 0 12 12" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><g fill="#1D1D1B"><path d="M.5 5.5h11v1H.5zM.5 2.5h11v1H.5zM.5 8.5h11v1H.5z"/></g></svg>
+                        <span class="align-middle">List</span>
+                    </a>
+                </div>
+                {{ include('components/_prev-next.html.twig', { type: 'files' }) }}
+            </article>
+        </div>
+    </div>
+</section>
+{% endblock %}

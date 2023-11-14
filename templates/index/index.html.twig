@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+{{ include('components/_header.html.twig', { title : 'Home' }) }}
+<section>
+    <div class="container-xl">
+        <div class="row">
+            <div class="col-xl-11 mx-auto">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div>
+                            <h1 class="text-center">About us</h1>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer a odio porttitor, faucibus sem eget, pharetra justo. Aenean luctus dignissim leo id porttitor. Vestibulum eu nibh metus. Phasellus interdum, tortor a consectetur porttitor, augue purus elementum magna, in lacinia arcu leo in sem. Cras diam justo, varius in nisl eu, dictum rutrum neque. Morbi orci massa, vulputate at orci vel, cursus posuere neque. Proin rhoncus, augue et dictum finibus, orci dolor condimentum ipsum, nec aliquam nunc elit et tellus. Praesent et interdum quam. Donec lacinia bibendum magna, eget placerat arcu malesuada sed.</p>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#video">
+                                    ► Watch the video
+                                </button>
+                            </div>
+                            <div data-controller="modal" class="modal modal-xl fade" id="video" tabindex="-1" aria-labelledby="videoLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content rounded-0 border-0">
+                                        <div class="modal-body text-start p-0">
+                                            <div class="ratio ratio-16x9">
+                                                <iframe loading="lazy" src="https://www.youtube-nocookie.com/embed/mjfT9mnyyWE" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-xl bg-transparent p-0">
+        <div class="row mx-0">
+            <div class="col-xl-12 mx-auto px-0">
+                {% if posts %}
+                    <h2 class="text-center my-4 my-xl-5">Last news</h2>
+                    {{ include('components/_posts.html.twig') }}
+                {% endif %}
+                {% if files %}
+                    <h2 class="text-center my-4 my-xl-5">Last files</h2>
+                    <div data-controller="carousel" id="carousel" class="carousel carousel-dark slide" data-bs-ride="false">
+                        <div class="d-flex">
+                            <button class="carousel-control-prev position-static" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <div class="carousel-inner">
+                                {% for file in files %}
+                                    <div class="carousel-item{% if loop.first %} active{% endif %}">
+                                        <div class="card text-center mx-2">
+                                            <div class="card-body text-truncate">
+                                                {% if file.isPrivate %}<span class="fs-14px">🔒</span>&nbsp;{% endif %}<a href="{{ path('app_file_show', { name: file, id: file.id }) }}" class="stretched-link">{{ file }}.{{ file.type }} ({{ file.size|format_bytes }})</a>
+                                            </div>
+                                            <div class="card-footer text-truncate">
+                                                {% if file.account %}{{ file.account|upper }}{% else %}Account deleted{% endif %} <i class="diamond"></i> {{ file.date|date(date_format) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <button class="carousel-control-next position-static" type="button" data-bs-target="#carousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                        <div class="carousel-indicators position-static mt-3 mb-0">
+                            {% for file in files %}
+                                <button type="button" data-bs-target="#carousel" data-bs-slide-to="{{ loop.index0 }}" aria-label="File {{ loop.index }}"{% if loop.first %} class="active" aria-current="true"{% endif %}></button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Error{% endblock %}
+
+{% block body %}
+{{ include('components/_header.html.twig', { title : 'Error', img : 'header_error.webp' }) }}
+<header class="position-relative">
+    <video src="{{ asset('build/images/header/header_error.webm') }}" class="fullscreen" playsinline muted autoplay loop></video>
+    <h3 class="mb-0 invisible">Error</h3>
+</header>
+<section>
+    <div class="container-xl">
+        <div class="row">
+            <div class="col-xl-11 mx-auto">
+                <h1 class="text-center">Did you get lost boy ?</h1>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

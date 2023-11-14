@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in{% endblock %}
+
+{% block body %}
+{{ include('components/_header.html.twig', { title : 'Log in', img : 'header_login.webp' }) }}
+<section>
+    <div class="container-xl">
+        <div class="row">
+            <div class="col-xl-9 mx-auto">
+                <form method="post">
+                    {% if error %}
+                        <div class="d-none" data-controller="notyf" data-type="error" data-content="{{ error.messageKey|trans(error.messageData, 'security') }}"></div>
+                    {% endif %}
+
+                    <label for="inputUsername">Username</label>
+                    <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control mb-3" autocomplete="username" required autofocus>
+                    <label for="inputPassword">Password</label>
+                    <input type="password" name="password" id="inputPassword" class="form-control mb-3" autocomplete="current-password" required>
+
+                    <input type="hidden" name="_csrf_token"
+                           value="{{ csrf_token('authenticate') }}"
+                    >
+
+                    <div class="checkbox mb-3">
+                        <label>
+                            <input type="checkbox" name="_remember_me"> Remember me
+                        </label>
+                    </div>
+
+                    <button class="btn btn-primary" type="submit">
+                        Sign in
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

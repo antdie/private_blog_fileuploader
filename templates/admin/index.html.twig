@@ -1,0 +1,15 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block page_content %}
+<ul class="list-group d-inline-flex">
+    <li class="list-group-item">Accounts : {{ total_accounts }}</li>
+    <li class="list-group-item">Posts : {{ total_posts }}</li>
+    <li class="list-group-item">Comments : {{ total_comments }}</li>
+    <li class="list-group-item">Files : {{ total_files }}{% if total_size_used %} ({{ total_size_used|format_bytes }} used){% endif %}</li>
+</ul>
+<script>
+    document.querySelector('#main-menu ul').firstElementChild.classList.add('active');
+</script>
+{% endblock %}

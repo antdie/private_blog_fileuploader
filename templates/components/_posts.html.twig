@@ -1,0 +1,19 @@
+{% for post in posts %}
+    <article class="article">
+        <a href="{{ path('app_post_show', { slug: post.slug, id: post.id }) }}" class="d-flex align-items-center text-decoration-none">
+            {% if post.category %}
+                <img src="{{ asset('uploads/categories/' ~ post.category.image) }}" alt="{{ post.category }}" class="img-fluid" loading="lazy" width="300" height="168">
+            {% else %}
+                {# ELSE IF A CATEGORY IS DELETED, TO NOT BREAK THE PAGE #}
+                <img src="{{ asset('uploads/categories/placeholder.webp') }}" alt="Default placeholder" class="img-fluid" loading="lazy" width="300" height="168">
+            {% endif %}
+            <span class="flex-grow-1 d-flex flex-column text-truncate">
+                <h1 class="order-xl-1 text-truncate">{{ post|capitalize }}</h1>
+                <span class="order-xl-0 d-flex flex-column flex-xl-row justify-content-xl-between ">
+                    <span{% if post.category %} style="color: {{ post.category.color }};"{% endif %}>{{ post.category }}</span>
+                    <span>{{ post.date|date(date_format) }}</span>
+                </span>
+            </span>
+        </a>
+    </article>
+{% endfor %}

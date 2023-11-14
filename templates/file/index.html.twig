@@ -1,0 +1,83 @@
+{% extends 'file/layout.html.twig' %}
+
+{% block title %}Files{% endblock %}
+
+{% block content %}
+<section>
+    <div class="container-xl bg-transparent p-0">
+        <div class="row mx-0">
+            <div class="col-xl-11 mx-auto px-0">
+                <div class="d-flex flex-column-reverse flex-xl-row justify-content-between">
+                    <div class="d-flex align-items-center">
+                        {% if app.user %}
+                            <a href="{{ path('app_file_add') }}" class="btn btn-primary me-2">Add a file</a>
+                        {% endif %}
+                        {% if 'sort' in app.request.query.all|keys or 'filterField' in app.request.query.all|keys %}
+                            <a href="{{ path('app_file') }}" class="btn btn-primary">Remove filter</a>
+                        {% endif %}
+                    </div>
+                    {% if files.getTotalItemCount %}
+                        {{ component('search', { type: 'files', max: max_search_results, granted: is_granted('ROLE_USER') }) }}
+                    {% endif %}
+                </div>
+                {% if files.getTotalItemCount %}
+{#                    {{ knp_pagination_filter(files, {'f.name': 'Name', 'f.type': 'Type', 'a.username': 'Owner'}) }}#}
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped mb-0 text-truncate">
+                            <thead>
+                                <tr>
+                                    <th scope="col">
+                                        {{ knp_pagination_sortable(files, 'Name', 'f.name') }}
+                                    </th>
+                                    <th scope="col">
+                                        {{ knp_pagination_sortable(files, 'Type', 'f.type') }}
+                                    </th>
+                                    <th scope="col" class="d-none d-xl-table-cell">
+                                        {{ knp_pagination_sortable(files, 'Owner', 'a.username') }}
+                                    </th>
+                                    <th scope="col">
+                                        {{ knp_pagination_sortable(files, 'Date', 'f.date') }}
+                                    </th>
+                                    <th scope="col" class="d-none d-sm-table-cell">
+                                        {{ knp_pagination_sortable(files, 'Size', 'f.size') }}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for file in files %}
+                                    <tr>
+                                        <td scope="row">
+                                            {% if file.isPrivate %}<span class="fs-14px">🔒</span>&nbsp;{% endif %}<a href="{{ path('app_file_show', { name: file, id: file.id }) }}">{{ file }}</a>
+                                        </td>
+                                        <td>
+                                            <a href="{{ path('app_file', { filterField: 'f.type', filterValue: file.type }) }}">
+                                                {{ file.type }}
+                                            </a>
+                                        </td>
+                                        <td class="d-none d-xl-table-cell">
+                                            {% if file.account %}
+                                                <a href="{{ path('app_file', { filterField: 'a.username', filterValue: file.account.username }) }}">
+                                                    {{ file.account|upper }}
+                                                </a>
+                                            {% else %}
+                                                Account deleted
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ file.date|date(date_format) }}</td>
+                                        <td class="d-none d-sm-table-cell">{{ file.size|format_bytes }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="navigation">
+                        {{ knp_pagination_render(files) }}
+                    </div>
+                {% else %}
+                    <div class="text-center">Currently no file.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
